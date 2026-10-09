@@ -13,7 +13,7 @@ const AFK_AWAY_STATUS = 'afk';
 
 // ====== 类型定义 ======
 
-// GET /api/0/ 返回的服务器信息
+// GET /api/0/info 返回的服务器信息
 interface AwServerInfo {
   testing: boolean;
   version: string;
@@ -62,15 +62,15 @@ function errMsg(e: unknown): string {
   return e instanceof Error ? e.message : String(e);
 }
 
-// 校验 /api/0/ 返回值结构
+// 校验 /api/0/info 返回值结构
 function parseServerInfo(v: unknown): AwServerInfo {
   if (!isRecord(v)) {
-    throw new Error('/api/0/ 返回非对象');
+    throw new Error('/api/0/info 返回非对象');
   }
   const version = asString(v.version);
   const hostname = asString(v.hostname);
   if (version === undefined || hostname === undefined) {
-    throw new Error('/api/0/ 返回缺少 version/hostname 字段');
+    throw new Error('/api/0/info 返回缺少 version/hostname 字段');
   }
   return {
     testing: v.testing === true,
@@ -154,11 +154,11 @@ export async function main(): Promise<void> {
   console.log('===== 1. 探活 aw-server =====');
   let info: AwServerInfo;
   try {
-    info = parseServerInfo(await getJson('/api/0/'));
+    info = parseServerInfo(await getJson('/api/0/info'));
   } catch (e) {
     console.error(`无法连接 aw-server（${AW_URL}）：${errMsg(e)}`);
     console.error('请确认 aw-server 已启动且地址正确（可用 AW_URL 环境变量覆盖，例如 AW_URL=http://127.0.0.1:5600）。');
-    process.exit(1);
+    throw new Error('aw-server 不可达');
   }
   console.log(`版本：${info.version}`);
   console.log(`主机名：${info.hostname}`);
@@ -169,18 +169,22 @@ export async function main(): Promise<void> {
   const buckets = parseBuckets(await getJson('/api/0/buckets'));
   const windowBuckets: AwBucket[] = [];
   const afkBuckets: AwBucket[] = [];
+  // bucket.type 对应 Event 数据结构类型名，非 watcher 简称
+  // aw-watcher-window 的 bucket type = 'currentwindow'
+  // aw-watcher-afk 的 bucket type = 'afkstatus'
+  // 依据：ActivityWatch 官方 bucket.type 设计
   for (const b of Object.values(buckets)) {
-    const mark = b.type === 'window' ? ' [window]' : b.type === 'afk' ? ' [afk]' : '';
+    const mark = b.type === 'currentwindow' ? ' [window]' : b.type === 'afkstatus' ? ' [afk]' : '';
     console.log(`- ${b.id} | type=${b.type}${mark}`);
-    if (b.type === 'window') {
+    if (b.type === 'currentwindow') {
       windowBuckets.push(b);
-    } else if (b.type === 'afk') {
+    } else if (b.type === 'afkstatus') {
       afkBuckets.push(b);
     }
   }
   if (windowBuckets.length === 0 || afkBuckets.length === 0) {
     console.error('\n未找到 window 或 afk bucket，请检查是否安装并运行了 aw-watcher-window / aw-watcher-afk。');
-    process.exit(1);
+    throw new Error('缺少 window 或 afk bucket');
   }
   // 多数环境各自只有一个，取第一个
   const windowBucket = windowBuckets[0];
@@ -256,6 +260,6 @@ export async function main(): Promise<void> {
 if (require.main === module) {
   main().catch((e: unknown) => {
     console.error('运行失败：', errMsg(e));
-    process.exit(1);
+    process.exitCode = 1;
   });
 }
