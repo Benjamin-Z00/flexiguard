@@ -1,7 +1,7 @@
 {
-  "name": "flex-work-verify",
+  "name": "flexiguard-desktop",
   "version": "0.1.0",
-  "description": "自由职业弹性工作打卡核验 App - P0 骨架",
+  "description": "FlexiGuard 电脑端 - Electron+TS+SQLite，ActivityWatch 取证核验",
   "type": "commonjs",
   "main": "dist/main/index.js",
   "scripts": {

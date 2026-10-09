@@ -1,5 +1,34 @@
+# 各端构建产物统一忽略
 node_modules/
 dist/
+build/
 *.db
 *.db-wal
 *.db-shm
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# 环境与密钥
+.env
+.env.local
+
+# 鸿蒙
+hvigor/
+oh_modules/
+.cxx/
+
+# iOS
+Pods/
+DerivedData/
+*.xcworkspace/xcuserdata/
+
+# Android
+.gradle/
+local.properties
+*.iml
