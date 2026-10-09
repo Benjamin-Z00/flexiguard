@@ -193,14 +193,32 @@ export async function main(): Promise<void> {
   console.log(`选用 afk bucket：${afkBucket.id}`);
 
   // 步骤 3：取最近 2 小时 events
-  console.log('\n===== 3. 取最近 2 小时 events =====');
+  // 单变量验证：先无参数取（确认 watcher 有数据），再带正确参数取（确认 query 语法）
+  console.log('\n===== 3a. 无参数取 events（验证 watcher 是否产生数据）=====');
+  const windowRawAll = parseEvents(
+    await getJson(`/api/0/buckets/${encodeURIComponent(windowBucket.id)}/events`),
+  );
+  const afkRawAll = parseEvents(
+    await getJson(`/api/0/buckets/${encodeURIComponent(afkBucket.id)}/events`),
+  );
+  console.log(`window bucket 全量条数（默认 limit）：${windowRawAll.length}`);
+  console.log(`afk bucket 全量条数（默认 limit）：${afkRawAll.length}`);
+  if (windowRawAll.length > 0) {
+    console.log(`最新 window event 时间戳：${windowRawAll[0].timestamp}`);
+    console.log(`  app=${asString(windowRawAll[0].data.app) ?? '(无)'} | title=${asString(windowRawAll[0].data.title) ?? '(无)'}`);
+  }
+  if (afkRawAll.length > 0) {
+    console.log(`最新 afk event 时间戳：${afkRawAll[0].timestamp} | status=${asString(afkRawAll[0].data.status) ?? '(无)'}`);
+  }
+
+  console.log('\n===== 3b. 带 start/end + limit 取最近 2 小时 events =====');
   const end = new Date();
   const start = new Date(end.getTime() - 2 * 60 * 60 * 1000);
   const startIso = start.toISOString();
   const endIso = end.toISOString();
   console.log(`时间区间：${startIso} ~ ${endIso}`);
-
-  const q = `?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}&limit=0`;
+  // limit=10000（足够大），不传 limit=0（被 aw-server 理解为"返回0条"）
+  const q = `?start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}&limit=10000`;
   const windowEvents = parseEvents(
     await getJson(`/api/0/buckets/${encodeURIComponent(windowBucket.id)}/events${q}`),
   );
