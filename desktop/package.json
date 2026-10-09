@@ -8,7 +8,9 @@
     "build": "tsc",
     "start": "electron .",
     "dev": "tsc && electron .",
-    "aw-verify": "node dist/scripts/aw-verify.js"
+    "aw-verify": "node dist/scripts/aw-verify.js",
+    "verify-demo": "node dist/scripts/verify-demo.js",
+    "s4-demo": "node dist/scripts/s4-demo.js"
   },
   "keywords": [],
   "author": "",

@@ -1,15 +1,28 @@
 import { app, BrowserWindow } from 'electron';
+import path from 'path';
+import { getDb } from '../db/database';
+import { runMigrations } from '../db/migrate';
+import { registerIpcHandlers } from './ipc';
 
-// P0 占位页面：仅用于启动一个可见窗口，后续步骤替换为真实 UI
-const PLACEHOLDER_URL = 'data:text/html,<h1>S1 OK</h1>';
+// 初始化数据库 + 迁移 + IPC（主进程模块加载时执行）
+const db = getDb();
+runMigrations(db);
+registerIpcHandlers();
 
-// 创建主窗口（800x600），加载占位页面
+// 创建主窗口（900x700），加载极简 UI
 function createWindow(): void {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 700,
+    webPreferences: {
+      // preload 编译后在 dist/preload/preload.js（__dirname = dist/main）
+      preload: path.join(__dirname, '..', 'preload', 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
   });
-  void win.loadURL(PLACEHOLDER_URL);
+  // renderer 目录在 src/ 外（tsc 不编译原生 HTML/JS）
+  void win.loadFile(path.join(__dirname, '..', '..', 'renderer', 'index.html'));
 }
 
 // 应用就绪后创建主窗口

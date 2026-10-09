@@ -1,0 +1,99 @@
+/* 极简样式：基础排版，不做美化（正式 UI 放 P1 鸿蒙端） */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  padding: 16px;
+  color: #222;
+}
+
+/* 顶部进度 */
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 16px;
+}
+.header-left h1 { font-size: 20px; }
+.date-label { color: #888; font-size: 13px; }
+.header-right { text-align: right; }
+.progress-text { font-size: 15px; margin-bottom: 4px; }
+#progress-bar { width: 200px; height: 14px; }
+
+/* 状态徽章 */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #fff;
+}
+.badge-pending { background: #999; }
+.badge-done { background: #28a745; }
+.badge-suspect { background: #f0ad4e; }
+.badge-pending_makeup { background: #dc3545; }
+.badge-running { background: #007bff; }
+
+/* 工具栏 */
+.toolbar { margin-bottom: 12px; }
+#btn-new {
+  padding: 6px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 任务表格 */
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+th { font-weight: 600; color: #666; font-size: 13px; }
+.actions { white-space: nowrap; }
+.actions button {
+  margin-right: 4px;
+  padding: 2px 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-danger { color: #dc3545; }
+
+/* 空提示 */
+.empty-hint { color: #aaa; padding: 20px 0; text-align: center; }
+
+/* 弹窗表单 */
+dialog {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 340px;
+}
+dialog h2 { margin-bottom: 12px; font-size: 16px; }
+dialog label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+dialog input {
+  display: block;
+  width: 100%;
+  padding: 4px 6px;
+  margin-top: 2px;
+  font-size: 13px;
+}
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.dialog-buttons button {
+  padding: 4px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}

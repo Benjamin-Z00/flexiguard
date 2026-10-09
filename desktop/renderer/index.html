@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlexiGuard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 顶部：当日进度 -->
+  <header id="header">
+    <div class="header-left">
+      <h1>FlexiGuard</h1>
+      <span id="today-date" class="date-label"></span>
+    </div>
+    <div class="header-right">
+      <div class="progress-text">
+        <span id="verified-minutes">0</span> / <span id="target-minutes">480</span> 分钟
+      </div>
+      <progress id="progress-bar" value="0" max="480"></progress>
+      <span id="met-badge" class="badge badge-pending">未达标</span>
+    </div>
+  </header>
+
+  <!-- 新建任务按钮 -->
+  <div class="toolbar">
+    <button id="btn-new" type="button">+ 新建任务</button>
+  </div>
+
+  <!-- 任务列表 -->
+  <main>
+    <table id="task-table">
+      <thead>
+        <tr>
+          <th>标题</th>
+          <th>计划时间</th>
+          <th>类别</th>
+          <th>状态</th>
+          <th>已核验(分)</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="task-list"></tbody>
+    </table>
+    <p id="empty-hint" class="empty-hint">今日无任务，点击"新建任务"开始</p>
+  </main>
+
+  <!-- 新建/编辑任务弹窗 -->
+  <dialog id="task-dialog">
+    <form id="task-form" method="dialog">
+      <h2 id="dialog-title">新建任务</h2>
+      <label>标题 <input type="text" name="title" required></label>
+      <label>计划开始 <input type="datetime-local" name="planned_start" required></label>
+      <label>计划结束 <input type="datetime-local" name="planned_end" required></label>
+      <label>类别 <input type="text" name="category" value="general"></label>
+      <div class="dialog-buttons">
+        <button type="button" id="btn-cancel">取消</button>
+        <button type="submit" id="btn-submit">确定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
