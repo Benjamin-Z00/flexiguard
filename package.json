@@ -1,0 +1,25 @@
+{
+  "name": "flex-work-verify",
+  "version": "0.1.0",
+  "description": "自由职业弹性工作打卡核验 App - P0 骨架",
+  "type": "commonjs",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "electron .",
+    "dev": "tsc && electron .",
+    "aw-verify": "node dist/scripts/aw-verify.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "electron": "^44.7.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.6.4",
+    "typescript": "^7.0.2"
+  }
+}
