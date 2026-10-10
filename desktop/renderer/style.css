@@ -63,6 +63,15 @@ th { font-weight: 600; color: #666; font-size: 13px; }
 }
 .btn-danger { color: #dc3545; }
 
+/* 到点未核验：高亮闪烁提示打卡 */
+.btn-due {
+  background: #f0ad4e;
+  color: #fff;
+  font-weight: 600;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
 /* 空提示 */
 .empty-hint { color: #aaa; padding: 20px 0; text-align: center; }
 

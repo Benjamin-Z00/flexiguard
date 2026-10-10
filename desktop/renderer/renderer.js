@@ -107,6 +107,9 @@ function renderTasks(tasks) {
     tdActions.className = 'actions';
     const btnVerify = document.createElement('button');
     btnVerify.textContent = '核验';
+    // 到点未核验（pending/running 且当前时间 >= planned_end）→ 高亮提示打卡
+    const isDue = (t.status === 'pending' || t.status === 'running') && Date.now() >= t.planned_end;
+    if (isDue) { btnVerify.classList.add('btn-due'); }
     btnVerify.onclick = () => onVerify(t.id);
     tdActions.appendChild(btnVerify);
     const btnEdit = document.createElement('button');

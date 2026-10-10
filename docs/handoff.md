@@ -8,7 +8,7 @@
 
 ## 0. 给 Code 模式 AI 的第一句话
 
-你好。这是一个跨端项目 `flexiguard`（弹性工作 8h 取证核验），当前在 **P0 电脑端** 阶段，进度到 **S2 ActivityWatch 接入验证**。前一个 AI 会话把代码和设计都写进了这个仓库，但因为前一会话跑在**远程沙箱**，够不到用户本地 Windows 电脑的 aw-server，所以 S2 的 3a/3b 真实数据验证还没跑通。**你的任务：在用户本地把 S2 跑通，看 3a/3b 输出判断链路是否成立。**
+你好。这是一个跨端项目 `flexiguard`（弹性工作 8h 取证核验）。**P0 电脑端已闭环完成**：S1-S5 全部跑通（详见 §3 进度表），下一步进入 **P1 鸿蒙端 + 局域网同步**。本文件 §0/§4 原为 S2 接力说明，保留作历史记录；新会话请直接看 §3 进度表与 §10 接下来。
 
 关键：不要推翻前一会话已锁定的设计。所有"为什么这样"的依据都写在本文件和 design-anchor.md 里。如有质疑，先读依据再决定。
 
@@ -43,10 +43,10 @@ c18fa6f refactor: monorepo 结构重组 flexiguard
 |---|---|
 | S0 方案 + 最小设计锚点 | ✅ 已完成（见 design-anchor.md） |
 | S1 项目骨架 + SQLite 三表 | ✅ 已完成 |
-| **S2 ActivityWatch 接入验证** | 🔄 **代码写完，3a/3b 真实数据未验证** |
-| S3 核验引擎 | ⬜ |
-| S4 任务 CRUD + 8h 累计 + 极简 UI | ⬜ |
-| S5 到点提醒 + 打卡核验（P0 完成） | ⬜ |
+| S2 ActivityWatch 接入验证 | ✅ 已完成（3a/3b 真实数据验证通过） |
+| S3 核验引擎 | ✅ 已完成（verify() 纯函数，P0 默认阈值 active_ratio≥0.7 / require_productive=true） |
+| S4 任务 CRUD + 8h 累计 + 极简 UI | ✅ 已完成（端到端核验可测） |
+| **S5 到点提醒 + 打卡核验** | ✅ **已完成 → P0 闭环完成** |
 
 ## 4. 当前卡点（你的首要任务）
 
@@ -120,11 +120,14 @@ npm run aw-verify
 - **鸿蒙优先**：[Screen Time Guard Kit](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/screentimeguard-introduction) 支持娱乐屏蔽，[权限流程化](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/restricted-permissions)
 - **iOS 排后**：[Family Controls entitlement](https://developer.apple.com/documentation/familycontrols/requesting-the-family-controls-entitlement) 需 Apple 单独审批，审核慢
 
-## 10. 接下来若 S2 跑通
+## 10. 接下来（P0 已完成 → P1）
 
-按执行清单继续：
-- **S3 核验引擎**：落实 `verify(task, evidences)` 接口契约（见 design-anchor.md 第 2 节），P0 默认阈值 active_ratio≥0.7 且 require_productive=true
-- **S4 任务 CRUD + 8h 累计 + 极简 UI**（列表+按钮+弹窗，不做布局美化，正式 UI 放 P1 鸿蒙端）
-- **S5 到点提醒 + 打卡核验** = P0 完成
+**S1-S5 全部完成，P0 电脑端闭环可用**：
+- S1 SQLite 三表、S2 AW 接入、S3 verify() 纯函数、S4 任务 CRUD+8h 累计+极简 UI+核验编排、S5 到点提醒+次日欠债提醒+打卡核验（复用 `verify:task` IPC）
+- S5 关键文件：`desktop/src/services/reminder-service.ts`（30s 扫描到点任务 + 系统通知 + 启动查昨日 `carried_over`），主进程 `index.ts` whenReady 后 `reminder.start()`，renderer 到点任务"核验"按钮加 `btn-due` 闪烁高亮
+- 验证方式：`cd desktop && npm run build && npm start`，建一个 `planned_end` 1 分钟后的任务等系统通知 + 点高亮"核验"按钮走打卡核验流程
 
-P0 完成后进入 P1 鸿蒙端 + 局域网同步。
+**下一步进入 P1**：
+- P1 鸿蒙端（Screen Time Guard Kit 娱乐屏蔽）
+- P1 局域网同步（P0 已锁定局域网直连，后续 sync-server）
+- 正式 UI（P0 极简 UI 放 P1 鸿蒙端重构）
